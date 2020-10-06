@@ -90,11 +90,12 @@ class MaterialSearchResult<T> extends StatelessWidget {
                                     i < dioParams.mapResults.length;
                                     i++) {
                                   if (i.toString() == code) {
-                                    dioParams.envelope.replaceAll(
-                                        "##ID##",
-                                        dioParams.mapResults.values
-                                            .elementAt(i)
-                                            .toString());
+                                    dioParams.envelope = dioParams.envelope
+                                        .replaceAll(
+                                            "##ID##",
+                                            dioParams.mapResults.values
+                                                .elementAt(i)
+                                                .toString());
                                   }
                                 }
 
