@@ -47,6 +47,16 @@ class MaterialSearchResult<T> extends StatelessWidget {
   final IconData icon;
   final DioParams dioParams;
 
+  String getCodeFromString(String sValue) {
+    String code = "";
+    List<String> list = sValue.split(":");
+
+    if (list.length > 1) {
+      code = list[0].trim();
+    }
+    return code;
+  }
+
   @override
   Widget build(BuildContext context) {
     IconButton leftIcon = new IconButton(
@@ -74,11 +84,13 @@ class MaterialSearchResult<T> extends StatelessWidget {
                                 Dio dio = new Dio();
                                 dio.options.headers = dioParams.mapHeaders;
 
+                                String code = getCodeFromString(text);
+
                                 for (var i = 0;
                                     i < dioParams.mapResults.length;
                                     i++) {
-                                  print(i.toString() + " " + text);
-                                  if (i.toString() == text) {
+                                  print(i.toString() + " " + code);
+                                  if (i.toString() == code) {
                                     dioParams.envelope.replaceAll(
                                         "##ID##", dioParams.mapResults[i]);
                                   }
