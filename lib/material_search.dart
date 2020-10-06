@@ -14,6 +14,7 @@ class DioParams {
   String type;
   String envelope;
   Map<String, String> mapHeaders;
+  Map<String, String> mapResults;
   String confirmTitle;
   String confirmMessage;
   String confirmYES;
@@ -24,6 +25,7 @@ class DioParams {
     this.type,
     this.envelope,
     this.mapHeaders,
+    this.mapResults,
     this.confirmTitle,
     this.confirmMessage,
     this.confirmYES,
@@ -71,6 +73,15 @@ class MaterialSearchResult<T> extends StatelessWidget {
                                 Response response;
                                 Dio dio = new Dio();
                                 dio.options.headers = dioParams.mapHeaders;
+
+                                for (var i = 0;
+                                    i < dioParams.mapResults.length;
+                                    i++) {
+                                  if (i.toString() == text) {
+                                    dioParams.envelope.replaceAll(
+                                        "##ID##", dioParams.mapResults[i]);
+                                  }
+                                }
 
                                 response = await dio.post(dioParams.url, data: {
                                   "envelope": dioParams.envelope
