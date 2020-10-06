@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:material_search/material_search.dart';
 
 void main() => runApp(new ExampleApp());
@@ -55,9 +54,10 @@ class _MyHomePageState extends State<MyHomePage> {
               placeholder: 'Search',
               results: _names
                   .map((String v) => new MaterialSearchResult<String>(
-                        icon: Icons.person,
+                        icon: Icons.do_not_disturb_alt,
                         value: v,
                         text: "Mr(s). $v",
+                        //    dioParams: dioParams,
                       ))
                   .toList(),
               filter: (dynamic value, String criteria) {

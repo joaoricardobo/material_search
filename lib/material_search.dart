@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 
@@ -9,24 +9,98 @@ typedef int MaterialSearchSort<T>(T a, T b, String c);
 typedef Future<List<MaterialSearchResult>> MaterialResultsFinder(String c);
 typedef void OnSubmit(String value);
 
+class DioParams {
+  String url;
+  String type;
+  String envelope;
+  Map<String, String> mapHeaders;
+  String confirmTitle;
+  String confirmMessage;
+  String confirmYES;
+  String confirmCANCEL;
+
+  DioParams({
+    this.url,
+    this.type,
+    this.envelope,
+    this.mapHeaders,
+    this.confirmTitle,
+    this.confirmMessage,
+    this.confirmYES,
+    this.confirmCANCEL,
+  });
+}
+
 class MaterialSearchResult<T> extends StatelessWidget {
   const MaterialSearchResult({
     Key key,
     this.value,
     this.text,
     this.icon,
+    this.dioParams,
   }) : super(key: key);
 
   final T value;
   final String text;
   final IconData icon;
+  final DioParams dioParams;
 
   @override
   Widget build(BuildContext context) {
+    IconButton leftIcon = new IconButton(
+        icon: new Icon(icon),
+        onPressed: () {
+          return null;
+        });
+
+    if (dioParams != null) {
+      leftIcon = new IconButton(
+          icon: new Icon(icon),
+          onPressed: () {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                      title: Text(dioParams.confirmTitle),
+                      content: Text(dioParams.confirmMessage),
+                      actions: <Widget>[
+                        new FlatButton(
+                            child: new Text(dioParams.confirmYES),
+                            onPressed: () async {
+                              if (dioParams.type == "POST") {
+                                Response response;
+                                Dio dio = new Dio();
+                                dio.options.headers = dioParams.mapHeaders;
+
+                                response = await dio.post(dioParams.url, data: {
+                                  "envelope": dioParams.envelope
+                                }).catchError((error) {
+                                  return false;
+                                });
+
+                                String result = response.data.toString().trim();
+                                result = result;
+                                //print(result);
+                                Navigator.of(context).pop(); //POPUP CANCEL
+                                Navigator.of(context).pop(); //BACK IN SEARCH
+                              } else {
+                                Navigator.of(context).pop();
+                              }
+                            }),
+                        new FlatButton(
+                            child: new Text(dioParams.confirmCANCEL),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            }),
+                      ]);
+                });
+          });
+    }
+
     return new Container(
       child: new Row(
         children: <Widget>[
-          new Container(width: 70.0, child: new Icon(icon)),
+          new Container(width: 70.0, child: leftIcon),
           new Expanded(
               child:
                   new Text(text, style: Theme.of(context).textTheme.subtitle2)),
@@ -188,7 +262,7 @@ class _MaterialSearchState<T> extends State<MaterialSearch> {
           autofocus: true,
           decoration:
               new InputDecoration.collapsed(hintText: widget.placeholder),
-          style: Theme.of(context).textTheme.title,
+          style: Theme.of(context).textTheme.headline6,
           onSubmitted: (String value) {
             if (widget.onSubmit != null) {
               widget.onSubmit(value);
@@ -319,7 +393,7 @@ class _MaterialSearchInputState<T> extends State<MaterialSearchInput<T>> {
   }
 
   Widget build(BuildContext context) {
-    final TextStyle valueStyle = Theme.of(context).textTheme.subhead;
+    final TextStyle valueStyle = Theme.of(context).textTheme.subtitle1;
 
     return new InkWell(
       onTap: () => _showMaterialSearch(context),
