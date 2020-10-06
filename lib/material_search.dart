@@ -68,6 +68,7 @@ class MaterialSearchResult<T> extends StatelessWidget {
     if (dioParams != null) {
       leftIcon = new IconButton(
           icon: new Icon(icon),
+          color: Colors.red,
           onPressed: () {
             showDialog(
                 context: context,
