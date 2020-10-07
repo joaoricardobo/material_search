@@ -90,7 +90,8 @@ class MaterialSearchResult<T> extends StatelessWidget {
                                 for (var i = 0;
                                     i < dioParams.mapResults.length;
                                     i++) {
-                                  if (i.toString() == code) {
+                                  if ((i + 1).toString() == code) {
+                                    print(text);
                                     dioParams.envelope = dioParams.envelope
                                         .replaceAll(
                                             "##ID##",
